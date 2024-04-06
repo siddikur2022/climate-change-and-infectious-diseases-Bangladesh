@@ -1,0 +1,111 @@
+##Our working directory
+setwd("ARMAN:/Research/KA_Climate_change_Infectious_Disease/Data Analysis")
+getwd()
+library(readxl)
+library(ggplot2)
+library(gridExtra)
+library(ggpubr)
+library(reshape2)
+
+##Upload the data
+data2<-read_excel("InfCC_KA_data.xlsx")
+head(data2)
+
+##P-values using t test for gender
+# Subset the data for Male and Female for Infectious disease
+male_data <- data2[data2$Sex == "Male", "Inf"]
+female_data <- data2[data2$Sex == "Female", "Inf"]
+
+# Perform t-test
+t_test_result <- t.test(male_data, female_data)
+p_value <- t_test_result$p.value
+print(p_value)
+
+# Subset the data for Male and Female for Climate change
+male_data <- data2[data2$Sex == "Male", "CC"]
+female_data <- data2[data2$Sex == "Female", "CC"]
+
+# Perform t-test
+t_test_result <- t.test(male_data, female_data)
+p_value <- t_test_result$p.value
+print(p_value)
+
+# Subset the data for Male and Female for Climate change on Infectious disease
+male_data <- data2[data2$Sex == "Male", "InfCC"]
+female_data <- data2[data2$Sex == "Female", "InfCC"]
+
+# Perform t-test
+t_test_result <- t.test(male_data, female_data)
+p_value <- t_test_result$p.value
+print(p_value)
+
+
+# Subset the data for Rural and Urban for Infectious disease
+rural_data <- data2[data2$Residence  == "Rural", "Inf"]
+urban_data <- data2[data2$Residence  == "Urban", "Inf"]
+
+# Perform t-test
+t_test_result <- t.test(rural_data, urban_data)
+p_value <- t_test_result$p.value
+print(p_value)
+
+# Subset the data for Rural and Urban for Climate change
+rural_data <- data2[data2$Residence  == "Rural", "CC"]
+urban_data <- data2[data2$Residence  == "Urban", "CC"]
+
+# Perform t-test
+t_test_result <- t.test(rural_data, urban_data)
+p_value <- t_test_result$p.value
+print(p_value)
+
+# Subset the data for Rural and Urban for Climate change on Infectious disease
+rural_data <- data2[data2$Residence  == "Rural", "InfCC"]
+urban_data <- data2[data2$Residence  == "Urban", "InfCC"]
+
+# Perform t-test
+t_test_result <- t.test(rural_data, urban_data)
+p_value <- t_test_result$p.value
+print(p_value)
+
+##Boxplots
+p1<-ggplot(data2,aes(x=Sex, y=CC,fill=Sex))+geom_boxplot()+theme_bw()+theme(legend.position = "none")+
+  stat_summary(geom = "point", aes(group=Sex, col=Sex),
+               fun.y = "mean", size = 4, position=position_dodge(width=0.5))+ 
+  stat_compare_means(aes(label = ..p.signif..), label.x = 1.5, label.y = 40)+
+  theme(text = element_text(size = 15))+ggtitle("A: Climate change")+ylab("Knowledge score (%)");p1
+
+p2<-ggplot(data2,aes(x=Sex, y=`Inf`,fill=Sex))+geom_boxplot()+theme_bw()+theme(legend.position = "none")+
+  stat_summary(geom = "point", aes(group=Sex, col=Sex),
+               fun.y = "mean", size = 4, position=position_dodge(width=0.5))+ 
+  stat_compare_means(aes(label = ..p.signif..), label.x = 1.5, label.y = 40)+
+  theme(text = element_text(size = 15))+ggtitle("B: Infectious disease")+ylab("");p2
+
+p3<-ggplot(data2,aes(x=Sex, y=InfCC,fill=Sex))+geom_boxplot()+theme_bw()+theme(legend.position = "none")+
+  stat_summary(geom = "point", aes(group=Sex, col=Sex),
+               fun.y = "mean", size = 4, position=position_dodge(width=0.5))+ 
+  stat_compare_means(aes(label = ..p.signif..), label.x = 1.5, label.y = 40)+
+  theme(text = element_text(size = 15))+ggtitle("C: Impact of climate change on infectious disease")+ylab("");p3
+
+p0<-grid.arrange(p1,p2,p3,ncol=3);p0
+
+
+p4<-ggplot(data2,aes(x=Residence, y=CC,fill=Residence))+geom_boxplot()+theme_bw()+theme(legend.position = "none")+
+  stat_summary(geom = "point", aes(group=Residence, col=Residence),
+               fun.y = "mean", size = 4, position=position_dodge(width=0.5))+ 
+  stat_compare_means(aes(label = ..p.signif..), label.x = 1.5, label.y = 40)+
+  theme(text = element_text(size = 15))+ggtitle("")+ylab("Knowledge score (%)");p4
+
+p5<-ggplot(data2,aes(x=Residence, y=`Inf`,fill=Residence))+geom_boxplot()+theme_bw()+theme(legend.position = "none")+
+  stat_summary(geom = "point", aes(group=Residence, col=Residence),
+               fun.y = "mean", size = 4, position=position_dodge(width=0.5))+ 
+  stat_compare_means(aes(label = ..p.signif..), label.x = 1.5, label.y = 40)+
+  theme(text = element_text(size = 15))+ggtitle("")+ylab("");p5
+
+p6<-ggplot(data2,aes(x=Residence, y=InfCC,fill=Residence))+geom_boxplot()+theme_bw()+theme(legend.position = "none")+
+  stat_summary(geom = "point", aes(group=Residence, col=Residence),
+               fun.y = "mean", size = 4, position=position_dodge(width=0.5))+ 
+  stat_compare_means(aes(label = ..p.signif..), label.x = 1.5, label.y = 40)+
+  theme(text = element_text(size = 15))+ggtitle("")+ylab("");p6
+
+p01<-grid.arrange(p4,p5,p6,ncol=3);p01
+grid.arrange(p0,p01,nrow=2)
